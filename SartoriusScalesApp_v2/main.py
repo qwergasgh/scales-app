@@ -1,14 +1,17 @@
 from logging.handlers import RotatingFileHandler
+from win32com.client import GetObject
+from settings import Settings
 from PyQt4 import QtGui
 import logging, sys
+import time
 
 
-logging.basicConfig(handlers=[RotatingFileHandler(filename="logfile.log",
-                     mode='w', maxBytes=50000, backupCount=4)], level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(handlers=[RotatingFileHandler(filename="logfile.log", mode='w', 
+                                                  maxBytes=50000, backupCount=4)], 
+                    level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+config = Settings()
 
 def get_exel_process():
-    import time
-    from win32com.client import GetObject
     time.sleep(3)
     process_exel = False
     WMI = GetObject('winmgmts:')
@@ -65,7 +68,7 @@ def create_app():
     w.setStyleSheet(css)
     w.resize(250, 150)
     w.move(300, 300)
-    w.setWindowTitle("SartoriusScalesApp")
+    w.setWindowTitle("SartoriusScalesApp_v2")
     w.show()
     sys.exit(app.exec_())
 

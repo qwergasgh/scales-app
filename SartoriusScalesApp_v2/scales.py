@@ -1,9 +1,10 @@
-from PyQt4 import QtCore
-from datetime import datetime
 import serial, re, logging, time
-from settings import Settings
+from datetime import datetime
+from PyQt4 import QtCore
+from main import config
+# from settings import Settings
 
-config = Settings()
+# config = Settings()
 
 class ScalesThread(QtCore.QThread):
     signal_scales = QtCore.pyqtSignal(str, int)
@@ -11,6 +12,7 @@ class ScalesThread(QtCore.QThread):
         QtCore.QThread.__init__(self, parent)
         logging.info('Create thread scales scan port')
         self.running = False
+        self.ser = None
         self.count = 0
 
     def convert_bytesize(self, value):

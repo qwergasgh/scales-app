@@ -1,10 +1,20 @@
+from exel_manager import ExelManager
 from PyQt4 import QtGui, QtCore
 from scales import ScalesThread
+from main import config
 import logging
-from settings import Settings
-from exel_manager import ExelManager
+# from settings import Settings
 
-config = Settings()
+
+
+#config = Settings()
+
+class ActiveBooksComboBox(QtGui.QComboBox):
+    popupShown = QtCore.pyqtSignal()
+
+    def showPopup(self):
+        self.popupShown.emit()
+        super(ActiveBooksComboBox, self).showPopup()
 
 
 class AppWindow(QtGui.QWidget):
@@ -73,7 +83,7 @@ class AppWindow(QtGui.QWidget):
         form.addRow("Периодичность взвешиваний:", self.lineedit_weighing_frequency)
 
         # active book
-        self.combobox_active_exel = QtGui.QComboBox()
+        self.combobox_active_exel = ActiveBooksComboBox(self) # QtGui.QComboBox()
         count = 0
         for name in self.exel_manager.get_books():
             self.combobox_active_exel.insertItem(count, name)
@@ -103,6 +113,22 @@ class AppWindow(QtGui.QWidget):
         self.button_stop_scan.clicked.connect(self.stop)
 
         self.scales.signal_scales.connect(self.write_values_to_exel, QtCore.Qt.QueuedConnection)
+        self.combobox_active_exel.popupShown.connect(self.update_active_books)
+	
+    def update_active_books(self):
+        active_books = self.exel_manager.update_books()
+        if len(active_books) == 0:
+            logging.info("Not found excel")
+        active_book = self.combobox_active_exel.currentText()
+        self.combobox_active_exel.clear()
+        count = 0
+        for name in active_books:
+            self.combobox_active_exel.insertItem(count, name)
+            count += 1
+        if active_book in active_books:
+            self.exel_manager.set_active_book(active_book)
+        else:
+            self.exel_manager.set_active_book(self.combobox_active_exel.currentText())
     
     def start(self):
         if not self.scales.isRunning():
@@ -152,3 +178,4 @@ class AppWindow(QtGui.QWidget):
         self.scales.wait(500)
         event.accept()
         logging.info('Close app')
+        

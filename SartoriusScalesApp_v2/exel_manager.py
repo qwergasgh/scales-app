@@ -34,6 +34,15 @@ class ExelManager(metaclass=ExelManagerMeta):
             logging.error('No active books')
         return active_books
 
+    def update_books(self):
+        logging.info('Update active books')
+        active_books = [workbook.Name for workbook in dynamic.Dispatch("Excel.Application").Workbooks]
+        if len(active_books) == 0:
+            logging.error('No active books')
+        else:
+            self.active_books = active_books
+        return active_books
+
     def set_active_book(self, name_book):
         if name_book not in self.active_books:
             return
