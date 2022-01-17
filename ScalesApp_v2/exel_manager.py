@@ -27,7 +27,7 @@ class ExcelManager(metaclass=ExcelManagerMeta):
     def get_books(self):
         logging.info('Loading active books')
         active_books = []
-        if self.app == None:
+        if self.app is None:
             active_books = [workbook.Name for workbook in dynamic.Dispatch("Excel.Application").Workbooks]
         else:
             active_books = self.active_books
@@ -59,7 +59,7 @@ class ExcelManager(metaclass=ExcelManagerMeta):
         logging.info("Clear excel parametrs")
 
     def set_parametr_write(self):
-        if self.current_book == None:
+        if self.current_book is None:
             logging.warning("None current book")
             return
         else:
@@ -70,7 +70,7 @@ class ExcelManager(metaclass=ExcelManagerMeta):
             logging.info("Set active cell " + active_cell)
 
     def write_values(self, weight, count):
-        if self.current_book == None or self.current_sheet == None:
+        if self.current_book is None or self.current_sheet is None:
             logging.warning("None current book or none current sheet")
             return
         else:

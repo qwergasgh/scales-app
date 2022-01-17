@@ -1,6 +1,9 @@
-import serial, re, logging, time
 from PyQt4 import QtCore
 from main import config
+import logging
+import serial
+import time
+import re
 
 
 def convert_stopbit(value):
