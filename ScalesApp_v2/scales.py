@@ -1,13 +1,11 @@
 import serial, re, logging, time
-from datetime import datetime
 from PyQt4 import QtCore
 from main import config
-# from settings import Settings
 
-# config = Settings()
 
 class ScalesThread(QtCore.QThread):
     signal_scales = QtCore.pyqtSignal(str, int)
+
     def __init__(self, parent=None):
         QtCore.QThread.__init__(self, parent)
         logging.info('Create thread scales scan port')
@@ -49,12 +47,12 @@ class ScalesThread(QtCore.QThread):
             return serial.STOPBITS_TWO
 
     def write_values(self, line, count):
-        logging.info('Parsing signal from scales')
         line_scales = line.strip().decode()
 
         if line_scales == "":
             return
 
+        logging.info('Parsing signal from scales')
         weight = ""
         # found = re.search(r'^N\s+[+-]\s*(\d+\.\d+) g', line_scales)
         found = re.search(r'^N\s+[+-]\s*(\d+\.\d+)($|( g))', line_scales)

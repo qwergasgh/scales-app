@@ -2,7 +2,7 @@ from win32com.client import dynamic
 import logging
 
 
-class ExelManagerMeta(type):
+class ExcelManagerMeta(type):
     def __init__(self, name, bases, dic):
         self.__instance = None
         super().__init__(name, bases, dic)
@@ -15,9 +15,10 @@ class ExelManagerMeta(type):
         cls.__instance = obj
         return obj
 
-class ExelManager(metaclass=ExelManagerMeta):
+
+class ExcelManager(metaclass=ExcelManagerMeta):
     def __init__(self):
-        logging.info('Create exel manager')
+        logging.info('Create excel manager')
         self.app = None
         self.current_book = None
         self.active_books = self.get_books()

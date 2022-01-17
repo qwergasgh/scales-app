@@ -1,13 +1,9 @@
-from exel_manager import ExelManager
+from excel_manager import ExcelManager
 from PyQt4 import QtGui, QtCore
 from scales import ScalesThread
 from main import config
 import logging
-# from settings import Settings
 
-
-
-#config = Settings()
 
 class ActiveBooksComboBox(QtGui.QComboBox):
     popupShown = QtCore.pyqtSignal()
@@ -26,7 +22,7 @@ class AppWindow(QtGui.QWidget):
         parity = ["NONE", "ODD", "EVEN", "MARK", "SPACE"]
         stopbit = ["1", "1.5", "2"]
 
-        self.exel_manager = ExelManager()
+        self.excel_manager = ExcelManager()
 
         form = QtGui.QFormLayout()
 
@@ -83,16 +79,16 @@ class AppWindow(QtGui.QWidget):
         form.addRow("Периодичность взвешиваний:", self.lineedit_weighing_frequency)
 
         # active book
-        self.combobox_active_exel = ActiveBooksComboBox(self) # QtGui.QComboBox()
+        self.combobox_active_excel = ActiveBooksComboBox(self) # QtGui.QComboBox()
         count = 0
         for name in self.exel_manager.get_books():
-            self.combobox_active_exel.insertItem(count, name)
+            self.combobox_active_excel.insertItem(count, name)
             count += 1
-        form.addRow("Активный EXCEL файл:", self.combobox_active_exel)
-        self.exel_manager.set_active_book(self.combobox_active_exel.currentText())
+        form.addRow("Активный EXCEL файл:", self.combobox_active_excel)
+        self.exel_manager.set_active_book(self.combobox_active_excel.currentText())
 
         # buttons
-        self.button_apply_settings= QtGui.QPushButton("Применить")
+        self.button_apply_settings = QtGui.QPushButton("Применить")
         self.button_start_scan = QtGui.QPushButton("Запуск")
         self.button_stop_scan = QtGui.QPushButton("Остановить")
         self.button_stop_scan.setDisabled(False)
@@ -113,18 +109,18 @@ class AppWindow(QtGui.QWidget):
         self.button_start_scan.clicked.connect(self.start)
         self.button_stop_scan.clicked.connect(self.stop)
 
-        self.scales.signal_scales.connect(self.write_values_to_exel, QtCore.Qt.QueuedConnection)
-        self.combobox_active_exel.popupShown.connect(self.update_active_books)
+        self.scales.signal_scales.connect(self.write_values_to_excel, QtCore.Qt.QueuedConnection)
+        self.combobox_active_excel.popupShown.connect(self.update_active_books)
 	
     def update_active_books(self):
         active_books = self.exel_manager.update_books()
         if len(active_books) == 0:
             logging.info("Not found excel")
-        active_book = self.combobox_active_exel.currentText()
-        self.combobox_active_exel.clear()
+        active_book = self.combobox_active_excel.currentText()
+        self.combobox_active_excel.clear()
         count = 0
         for name in active_books:
-            self.combobox_active_exel.insertItem(count, name)
+            self.combobox_active_excel.insertItem(count, name)
             count += 1
         if active_book in active_books:
             self.exel_manager.set_active_book(active_book)
@@ -154,22 +150,25 @@ class AppWindow(QtGui.QWidget):
 
     def apply_settings(self):
         logging.info('Aplly settings')
-        self.exel_manager.set_active_book(self.combobox_active_exel.currentText())
-        config.update({"device": self.lineedit_device.text(), "connection_speed": self.lineedit_connection_speed.text(),
-                       "data_bits": self.combobox_data_bits.currentText(), "parity_check": self.combobox_parity_check.currentText(),
-                       "stop_bit": self.combobox_stop_bit.currentText(), "number_of_weighings": self.lineedit_number_of_weighings.text(), 
+        self.excel_manager.set_active_book(self.combobox_active_ecxel.currentText())
+        config.update({"device": self.lineedit_device.text(),
+                       "connection_speed": self.lineedit_connection_speed.text(),
+                       "data_bits": self.combobox_data_bits.currentText(),
+                       "parity_check": self.combobox_parity_check.currentText(),
+                       "stop_bit": self.combobox_stop_bit.currentText(),
+                       "number_of_weighings": self.lineedit_number_of_weighings.text(),
                        "weighing_frequency": self.lineedit_weighing_frequency.text()})
 
-    def write_values_to_exel(self, weight, count):
+    def write_values_to_excel(self, weight, count):
         logging.info(str(count + 1) + "/" + config.number_of_weighings)
         if count == 0:
-            self.exel_manager.set_parametr_write()
+            self.excel_manager.set_parametr_write()
         logging.info("Signal from scales to exel (weight = " + weight + ")")
         self.exel_manager.write_values(weight, count)
         if (count + 1) == int(config.number_of_weighings):
             self.stop()
             self.scales.count = 0
-            self.exel_manager.clear_parametrs()
+            self.excel_manager.clear_parametrs()
 
     def closeEvent(self, event):
         config.save()

@@ -1,5 +1,7 @@
 from configparser import ConfigParser
-import logging, os
+import logging
+import os
+
 
 class SettingsMeta(type):
     def __init__(self, name, bases, dic):
@@ -13,6 +15,7 @@ class SettingsMeta(type):
         obj.__init__(*args, **kwargs)
         cls.__instance = obj
         return obj
+
 
 class Settings(metaclass=SettingsMeta):
     def __init__(self):
@@ -28,8 +31,7 @@ class Settings(metaclass=SettingsMeta):
             self.create_new_settings_file()
             logging.info('Reading settings.ini')
             self._config_parser.read(self._settings_file)
-        
-            
+
         # global settings
         self.device = self._config_parser.get("global_settings", "device")
         self.connection_speed = self._config_parser.get("global_settings", "connection_speed")
@@ -39,11 +41,10 @@ class Settings(metaclass=SettingsMeta):
         self.number_of_weighings = self._config_parser.get("global_settings", "number_of_weighings")
         self.weighing_frequency = self._config_parser.get("global_settings", "weighing_frequency")
 
-
     def get(self):
         settings = {"device": self.device, "connection_speed": self.connection_speed,
                     "data_bits": self.data_bits, "parity_check": self.parity_check,
-                    "stop_bit": self.stop_bit, "number_of_weighings": self.number_of_weighings, 
+                    "stop_bit": self.stop_bit, "number_of_weighings": self.number_of_weighings,
                     "weighing_frequency": self.weighing_frequency}
         return settings
 
@@ -79,14 +80,12 @@ class Settings(metaclass=SettingsMeta):
         with open(self._settings_file, "w") as config:
             self._config_parser.write(config)
 
-
     def check_settings(self):
         return os.path.isfile(self._settings_file)
 
     def create_new_settings_file(self):
-        settings = ["[global_settings]", "device = COM7", "connection_speed = 9600", "data_bits = 8", 
+        settings = ["[global_settings]", "device = COM7", "connection_speed = 9600", "data_bits = 8",
                     "parity_check = ODD", "stop_bit = 1", "number_of_weighings = 10", "weighing_frequency = 3"]
-
         with open(self._settings_file, "w") as file:
             for i in settings:
                 file.write(i + "\n")
