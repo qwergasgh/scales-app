@@ -103,6 +103,7 @@ class AppWindow(QtGui.QWidget):
         form.addRow(self.button_start_scan)
         # button stop
         form.addRow(self.button_stop_scan)
+        self.button_stop_scan.setDisabled(True)
 
         self.setLayout(form)
 
