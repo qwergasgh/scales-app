@@ -79,7 +79,7 @@ class AppWindow(QtGui.QWidget):
         form.addRow("Периодичность взвешиваний:", self.lineedit_weighing_frequency)
 
         # active book
-        self.combobox_active_excel = ActiveBooksComboBox(self) # QtGui.QComboBox()
+        self.combobox_active_excel = ActiveBooksComboBox(self)  # QtGui.QComboBox()
         count = 0
         for name in self.exel_manager.get_books():
             self.combobox_active_excel.insertItem(count, name)
@@ -111,7 +111,7 @@ class AppWindow(QtGui.QWidget):
 
         self.scales.signal_scales.connect(self.write_values_to_excel, QtCore.Qt.QueuedConnection)
         self.combobox_active_excel.popupShown.connect(self.update_active_books)
-	
+
     def update_active_books(self):
         active_books = self.exel_manager.update_books()
         if len(active_books) == 0:
@@ -126,7 +126,7 @@ class AppWindow(QtGui.QWidget):
             self.exel_manager.set_active_book(active_book)
         else:
             self.exel_manager.set_active_book(self.combobox_active_exel.currentText())
-    
+
     def start(self):
         if not self.scales.isRunning():
             self.button_start_scan.setDisabled(True)
@@ -178,4 +178,3 @@ class AppWindow(QtGui.QWidget):
         self.scales.wait(500)
         event.accept()
         logging.info('Close app')
-        
