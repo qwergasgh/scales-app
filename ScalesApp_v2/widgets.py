@@ -141,7 +141,8 @@ class AppWindow(QtGui.QWidget):
         self.scales.running = False
         self.scales.terminate()
         self.scales.quit()
-        self.scales.ser.close()
+        if self.scales.ser is not None:
+            self.scales.ser.close()
         self.button_start_scan.setDisabled(False)
         self.button_stop_scan.setDisabled(True)
         self.button_apply_settings.setDisabled(False)
@@ -174,7 +175,8 @@ class AppWindow(QtGui.QWidget):
         config.save()
         self.hide()
         self.scales.running = False
-        self.scales.ser.close()
+        if self.scales.ser is not None:
+            self.scales.ser.close()
         self.scales.wait(500)
         event.accept()
         logging.info('Close app')
