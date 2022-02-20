@@ -38,14 +38,22 @@ class Settings(metaclass=SettingsMeta):
         self.data_bits = self._config_parser.get("global_settings", "data_bits")
         self.parity_check = self._config_parser.get("global_settings", "parity_check")
         self.stop_bit = self._config_parser.get("global_settings", "stop_bit")
-        self.number_of_weighings = self._config_parser.get("global_settings", "number_of_weighings")
-        self.weighing_frequency = self._config_parser.get("global_settings", "weighing_frequency")
+        self.mode = self._config_parser.get("global_settings", "mode")
+
+        # weight sum
+        self.date_sum = self._config_parser.get("weight_sum", "date")
+        self.weight_sum = self._config_parser.get("weight_sum", "weight")
+
+        # weight kort
+        self.date_kort = self._config_parser.get("weight_kort", "date")
+        self.weight_kort = self._config_parser.get("weight_kort", "weight")
 
     def get(self):
         settings = {"device": self.device, "connection_speed": self.connection_speed,
                     "data_bits": self.data_bits, "parity_check": self.parity_check,
-                    "stop_bit": self.stop_bit, "number_of_weighings": self.number_of_weighings,
-                    "weighing_frequency": self.weighing_frequency}
+                    "stop_bit": self.stop_bit, "date_sum": self.date_sum,
+                    "weight_sum": self.weight_sum, "date_kort": self.date_kort,
+                    "weight_kort": self.weight_kort, "mode": self.mode}
         return settings
 
     def update(self, config_values):
@@ -61,10 +69,16 @@ class Settings(metaclass=SettingsMeta):
                 self.parity_check = v
             if k == "stop_bit":
                 self.stop_bit = v
-            if k == "number_of_weighings":
-                self.number_of_weighings = v
-            if k == "weighing_frequency":
-                self.weighing_frequency = v
+            if k == "mode":
+                self.mode = v
+            if k == "date_sum":
+                self.date_sum = v
+            if k == "weight_sum":
+                self.weight_sum = v
+            if k == "date_kort":
+                self.date_kort = v
+            if k == "weight_kort":
+                self.weight_kort = v
 
     def save(self):
         logging.info('Save config parametrs')
@@ -74,8 +88,15 @@ class Settings(metaclass=SettingsMeta):
         self._config_parser.set("global_settings", "data_bits", self.data_bits)
         self._config_parser.set("global_settings", "parity_check", self.parity_check)
         self._config_parser.set("global_settings", "stop_bit", self.stop_bit)
-        self._config_parser.set("global_settings", "number_of_weighings", self.number_of_weighings)
-        self._config_parser.set("global_settings", "weighing_frequency", self.weighing_frequency)
+        self._config_parser.set("global_settings", "mode", self.mode)
+
+        # weight sum
+        self._config_parser.set("weight_sum", "date", self.date_sum)
+        self._config_parser.set("weight_sum", "weight", self.weight_sum)
+
+        # weight kort
+        self._config_parser.set("weight_kort", "date", self.date_kort)
+        self._config_parser.set("weight_kort", "weight", self.weight_kort)
 
         with open(self._settings_file, "w") as config:
             self._config_parser.write(config)
@@ -84,8 +105,10 @@ class Settings(metaclass=SettingsMeta):
         return os.path.isfile(self._settings_file)
 
     def create_new_settings_file(self):
-        settings = ["[global_settings]", "device = COM7", "connection_speed = 9600", "data_bits = 8",
-                    "parity_check = ODD", "stop_bit = 1", "number_of_weighings = 10", "weighing_frequency = 3"]
+        settings = ("[global_settings]", "device = COM7", "connection_speed = 9600", "data_bits = 8",
+                    "parity_check = ODD", "stop_bit = 1", "mode = 0\n", "[weight_sum]", "date = A",
+                    "weight = F\n", "[weight_kort]", "date = A", "weight = G")
+
         with open(self._settings_file, "w") as file:
             for i in settings:
                 file.write(i + "\n")

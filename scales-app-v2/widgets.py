@@ -18,9 +18,9 @@ class AppWindow(QtGui.QWidget):
         logging.info("Create central widget")
         QtGui.QWidget.__init__(self, parent)
 
-        bytes_size = ["5", "6", "7", "8"]
-        parity = ["NONE", "ODD", "EVEN", "MARK", "SPACE"]
-        stopbit = ["1", "1.5", "2"]
+        bytes_size = ("5", "6", "7", "8")
+        parity = ("NONE", "ODD", "EVEN", "MARK", "SPACE")
+        stopbit = ("1", "1.5", "2")
 
         self.excel_manager = ExcelManager()
 

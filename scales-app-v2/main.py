@@ -71,7 +71,7 @@ def create_app():
     w.setStyleSheet(css)
     w.resize(250, 150)
     w.move(300, 300)
-    w.setWindowTitle("SartoriusScalesApp_v2")
+    w.setWindowTitle("ScalesApp_v2")
     w.show()
     sys.exit(app.exec_())
 

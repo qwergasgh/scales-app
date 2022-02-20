@@ -59,7 +59,6 @@ class ScalesThread(QtCore.QThread):
             return
 
         weight = ""
-        # found = re.search(r'^N\s+[+-]\s*(\d+\.\d+) g', line_scales)
         found = re.search(r'^N\s+[+-]\s*(\d+\.\d+)($|( g))', line_scales)
         if found is not None:
             logging.info('Parsing signal from scales')
